@@ -77,7 +77,7 @@ def parseJson(dict_obj):
                     langs[lang][part_of_speech] = []
                 for definition in word['definitions']:
                     def_txt = next(iter(definition.values())).strip()
-                    if len(def_txt) > 0:
+                    if def_txt != "":
                         langs[lang][part_of_speech].append(def_txt)
         except Exception as e:
             print("Error: " + str(e))
