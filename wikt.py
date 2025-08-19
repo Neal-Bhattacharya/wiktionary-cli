@@ -99,7 +99,7 @@ def printOut(langs):
                 print("       " + str(y) + ". " + str(d.strip()))
                 y += 1
 def main():
-    if (insecure):
+    if insecure:
         import urllib3
         urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
