@@ -1,0 +1,87 @@
+import requests
+import re
+import ast
+import sys
+
+# TODO: Implement non-lemmatized form detection
+
+limit_langs = True
+user_langs = ['English', 'French', 'Spanish', 'Ancient Greek', 'Latin', 'German']
+sep = "----------------------------------------"
+GREEN = "\033[32m"
+YELLOW = "\033[94m"
+ESCAPE = "\033[0m"
+
+def goodbye():
+    print("\nGoodbye")
+    sys.exit()
+
+def getUserWord():
+    try:
+        return input("Enter word" + GREEN +  " (q to quit)" + ESCAPE + "\n>").strip()
+    except KeyboardInterrupt:
+        goodbye()
+
+def getWordJson(word):
+    url = "https://en.wiktionary.org/api/rest_v1/page/definition/" + word
+    res = requests.get(url)
+
+    raw_str = re.sub('<[^<]+?>', '', res.text)
+    if "404" in raw_str:
+        print("\033[93m" + "Word not found." + "\033[0m")
+        print(sep)
+        return None
+    parsed_dict = ast.literal_eval(raw_str)
+    return parsed_dict
+
+
+def parseJson(dict_obj):
+
+    langs = {}
+
+    for v in dict_obj.values():
+        try:
+            for x in range(0, len(v)):
+                word = v[x]
+                lang = word['language']
+                if limit_langs and lang not in user_langs:
+                    continue
+                part_of_speech = word['partOfSpeech']
+                if lang not in langs.keys():
+                    langs[lang] = {}
+                if part_of_speech not in langs[lang].keys():
+                    langs[lang][part_of_speech] = []
+                for definition in word['definitions']:
+                    def_txt = next(iter(definition.values())).strip()
+                    if len(def_txt) > 0:
+                        langs[lang][part_of_speech].append(def_txt)
+        except Exception as e:
+            print("Error: " + str(e))
+            return None
+
+    return langs
+
+
+def printOut(langs):
+    print(sep)
+    for k in langs.keys():
+        print("\033[94m" + k + "\033[0m")
+        for p in langs[k].keys():
+            print("  " + str(p))
+            y = 1
+            for d in langs[k][p]:
+                print("       " + str(y) + ". " + str(d.strip()))
+                y += 1
+def main():
+    while True:
+        word = getUserWord()
+        if word == "q":
+            goodbye()
+        json = getWordJson(word)
+        if json is None:
+            continue
+        printOut(parseJson(json))
+        print(sep)
+
+if __name__ == "__main__":
+    main()
