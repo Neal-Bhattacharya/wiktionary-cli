@@ -2,6 +2,7 @@
 Wiktionary from the Terminal
 
 ## Dependencies
-- python
+- python3
 - requests
-  sudo pip3 install requests`
+  
+  `sudo pip3 install requests`
