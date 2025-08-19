@@ -1,4 +1,4 @@
-# cli-wiktionary
+# wiktionary-cli
 Wiktionary from the Terminal
 
 ```
