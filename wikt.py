@@ -16,7 +16,14 @@ disable_colors = False
 insecure = False
 
 # These must be entered exactly as they appear in Wiktionary headings
-user_langs = ['English', 'French', 'Spanish', 'Ancient Greek', 'Latin', 'German']
+user_langs = set([
+              'English',
+              'French',
+              'Spanish',
+              'Ancient Greek',
+              'Latin',
+              'German'
+              ])
 
 def color(s, color):
     if disable_colors: return s
@@ -99,7 +106,7 @@ def printOut(langs):
                 print("       " + str(y) + ". " + str(d.strip()))
                 y += 1
 def main():
-    if insecure:
+    if (insecure):
         import urllib3
         urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
