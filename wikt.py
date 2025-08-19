@@ -5,7 +5,10 @@ import sys
 
 # TODO: Implement non-lemmatized form detection
 
-limit_langs = True
+# Set this to True to only list langs in `user_langs`
+limit_langs = False
+
+# These must be entered exactly as they appear in Wiktionary headings
 user_langs = ['English', 'French', 'Spanish', 'Ancient Greek', 'Latin', 'German']
 sep = "----------------------------------------"
 GREEN = "\033[32m"
@@ -17,10 +20,13 @@ def goodbye():
     sys.exit()
 
 def getUserWord():
-    try:
-        return input("Enter word" + GREEN +  " (q to quit)" + ESCAPE + "\n>").strip()
-    except KeyboardInterrupt:
-        goodbye()
+    word = ""
+    while word == "":
+        try:
+            word = input("Enter word" + GREEN +  " (q to quit)" + ESCAPE + "\n>").strip()
+        except KeyboardInterrupt:
+            goodbye()
+    return word
 
 def getWordJson(word):
     url = "https://en.wiktionary.org/api/rest_v1/page/definition/" + word
