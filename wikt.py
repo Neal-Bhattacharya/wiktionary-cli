@@ -8,8 +8,11 @@ import sys
 # Set this to True to only list langs in `user_langs`
 limit_langs = False
 
-# Dangerous to set True!
-# see https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+# Disable console colors
+disable_colors = False
+
+# If this is true, do not perform SSL verification
+# Dangerous! see https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
 insecure = False
 
 # These must be entered exactly as they appear in Wiktionary headings
@@ -17,6 +20,7 @@ user_langs = ['English', 'French', 'Spanish', 'Ancient Greek', 'Latin', 'German'
 sep = "----------------------------------------"
 
 def color(s, color):
+    if disable_colors: return s
     GREEN = "\033[32m"
     YELLOW = "\033[94m"
     BLUE = "\033[94m"
