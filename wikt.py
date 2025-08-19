@@ -17,12 +17,11 @@ insecure = False
 
 # These must be entered exactly as they appear in Wiktionary headings
 user_langs = ['English', 'French', 'Spanish', 'Ancient Greek', 'Latin', 'German']
-sep = "----------------------------------------"
 
 def color(s, color):
     if disable_colors: return s
     GREEN = "\033[32m"
-    YELLOW = "\033[94m"
+    YELLOW = "\033[93m"
     BLUE = "\033[94m"
     ESCAPE = "\033[0m"
     match color.lower():
@@ -32,6 +31,9 @@ def color(s, color):
             return BLUE + s + ESCAPE
         case "yellow":
             return YELLOW + s + ESCAPE
+
+def printSep():
+    print("----------------------------------------")
 
 def goodbye():
     print("\nGoodbye")
@@ -52,8 +54,8 @@ def getWordJson(word):
 
     raw_str = re.sub('<[^<]+?>', '', res.text)
     if "404" in raw_str:
-        print("\033[93m" + "Word not found." + "\033[0m")
-        print(sep)
+        print(color("Word not found.", "yellow"))
+        printSep()
         return None
     parsed_dict = ast.literal_eval(raw_str)
     return parsed_dict
@@ -87,7 +89,7 @@ def parseJson(dict_obj):
 
 
 def printOut(langs):
-    print(sep)
+    printSep()
     for k in langs.keys():
         print(color(k, "blue"))
         for p in langs[k].keys():
@@ -109,7 +111,7 @@ def main():
         if json is None:
             continue
         printOut(parseJson(json))
-        print(sep)
+        printSep()
 
 if __name__ == "__main__":
     main()
