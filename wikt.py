@@ -6,7 +6,7 @@ import sys
 # TODO: Implement non-lemmatized form detection
 
 # Set this to True to only list langs in `user_langs`
-limit_langs = False
+limit_langs = True
 
 # Disable console colors
 disable_colors = False
@@ -15,60 +15,61 @@ disable_colors = False
 # Dangerous! see https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
 insecure = False
 
+quit_word = "q"
+
 # These must be entered exactly as they appear in Wiktionary headings
-user_langs = set([
+user_langs = {
               'English',
               'French',
               'Spanish',
               'Ancient Greek',
               'Latin',
               'German'
-              ])
+              }
 
-def color(s, color):
+def color(s, col):
     if disable_colors: return s
-    GREEN = "\033[32m"
-    YELLOW = "\033[93m"
-    BLUE = "\033[94m"
-    ESCAPE = "\033[0m"
-    match color.lower():
-        case "green":
-            return GREEN + s + ESCAPE
-        case "blue":
-            return BLUE + s + ESCAPE
-        case "yellow":
-            return YELLOW + s + ESCAPE
+    green = "\033[32m"
+    yellow = "\033[93m"
+    blue = "\033[94m"
+    escape = "\033[0m"
+    match col.lower():
+        case "green":  return green + s + escape
+        case "blue":   return blue + s + escape
+        case "yellow": return yellow + s + escape
+        case _:        return s
 
-def printSep():
+def print_sep():
     print("----------------------------------------")
 
 def goodbye():
     print("\nGoodbye")
     sys.exit()
 
-def getUserWord():
+def get_user_word():
     word = ""
     while word == "":
         try:
-            word = input("Enter word" + color(" (q to quit)", "green")+ "\n>").strip()
+            word = input("Enter word" + color(" (to quit)", "green")+ "\n>").strip()
         except KeyboardInterrupt:
             goodbye()
     return word
 
-def getWordJson(word):
+def get_word_json(word):
     url = "https://en.wiktionary.org/api/rest_v1/page/definition/" + word
-    res = requests.get(url, verify=not insecure)
+    headers = {"User-Agent" : "https://github.com/Neal-Bhattacharya/wiktionary-cli"}
+    res = requests.get(url, verify=not insecure, headers=headers)
 
     raw_str = re.sub('<[^<]+?>', '', res.text)
     if "404" in raw_str:
         print(color("Word not found.", "yellow"))
-        printSep()
+        print_sep()
         return None
     parsed_dict = ast.literal_eval(raw_str)
     return parsed_dict
 
 
-def parseJson(dict_obj):
+def parse_json(dict_obj):
 
     langs = {}
 
@@ -95,30 +96,30 @@ def parseJson(dict_obj):
     return langs
 
 
-def printOut(langs):
-    printSep()
-    for k in langs.keys():
-        print(color(k, "blue"))
-        for p in langs[k].keys():
+def print_out(langs):
+    print_sep()
+    for l in langs:
+        print(color(l, "blue"))
+        for p in langs[l]:
             print("  " + str(p))
             y = 1
-            for d in langs[k][p]:
+            for d in langs[l][p]:
                 print("       " + str(y) + ". " + str(d.strip()))
                 y += 1
 def main():
-    if (insecure):
+    if insecure:
         import urllib3
         urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
     while True:
-        word = getUserWord()
+        word = get_user_word()
         if word == "q":
             goodbye()
-        json = getWordJson(word)
+        json = get_word_json(word)
         if json is None:
             continue
-        printOut(parseJson(json))
-        printSep()
+        print_out(parse_json(json))
+        print_sep()
 
 if __name__ == "__main__":
     main()
