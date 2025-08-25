@@ -6,7 +6,7 @@ import sys
 # TODO: Implement non-lemmatized form detection
 
 # Set this to True to only list langs in `user_langs`
-limit_langs = True
+limit_langs = False
 
 # Disable console colors
 disable_colors = False
@@ -50,7 +50,8 @@ def get_user_word():
     word = ""
     while word == "":
         try:
-            word = input("Enter word" + color(" (to quit)", "green")+ "\n>").strip()
+            prompt = "Enter word " + color("(" + quit_word + " to quit):\n", "green")
+            word = input(prompt).strip()
         except KeyboardInterrupt:
             goodbye()
     return word
@@ -113,7 +114,7 @@ def main():
 
     while True:
         word = get_user_word()
-        if word == "q":
+        if word == quit_word:
             goodbye()
         json = get_word_json(word)
         if json is None:
