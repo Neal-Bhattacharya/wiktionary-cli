@@ -61,11 +61,12 @@ def get_word_json(word):
     headers = {"User-Agent" : "https://github.com/Neal-Bhattacharya/wiktionary-cli"}
     res = requests.get(url, verify=not insecure, headers=headers)
 
-    raw_str = re.sub('<[^<]+?>', '', res.text)
-    if "404" in raw_str:
+    if res.status_code == 404:
         print(color("Word not found.", "yellow"))
         print_sep()
         return None
+    raw_str = re.sub('<[^<]+?>', '', res.text)
+
     parsed_dict = ast.literal_eval(raw_str)
     return parsed_dict
 
