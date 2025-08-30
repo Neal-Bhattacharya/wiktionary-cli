@@ -102,12 +102,12 @@ def print_out(langs):
     print_sep()
     for l in langs:
         print(color(l, "blue"))
-        for p in langs[l]:
-            print("  " + str(p))
-            y = 1
-            for d in langs[l][p]:
-                print("       " + str(y) + ". " + str(d.strip()))
-                y += 1
+        for part_of_speech in langs[l]:
+            print("  " + str(part_of_speech))
+            i = 1
+            for d in langs[l][part_of_speech]:
+                print("       " + str(i) + ". " + str(d.strip()))
+                i += 1
 def main():
     if insecure:
         import urllib3
