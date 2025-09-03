@@ -6,7 +6,7 @@ import sys
 # TODO: Implement non-lemmatized form detection
 
 # Set this to True to only list langs in `user_langs`
-limit_langs = False
+limit_langs = True
 
 # Disable console colors
 disable_colors = False
@@ -94,20 +94,23 @@ def parse_json(dict_obj):
         except Exception as e:
             print("Error: " + str(e))
             return None
-
+    if (not langs) or (len(langs) == 0):
+        print(color("Word not found in specified languages.", "yellow"))
     return langs
 
 
 def print_out(langs):
+    if (not langs) or (len(langs) == 0):
+        return
     print_sep()
     for l in langs:
         print(color(l, "blue"))
-        for part_of_speech in langs[l]:
-            print("  " + str(part_of_speech))
-            i = 1
-            for d in langs[l][part_of_speech]:
-                print("       " + str(i) + ". " + str(d.strip()))
-                i += 1
+        for p in langs[l]:
+            print("  " + str(p))
+            y = 1
+            for d in langs[l][p]:
+                print("       " + str(y) + ". " + str(d.strip()))
+                y += 1
 def main():
     if insecure:
         import urllib3
