@@ -3,6 +3,8 @@ import re
 import ast
 import sys
 
+# TODO: Implement non-lemmatized form detection
+
 # Set this to True to only list langs in `user_langs`
 limit_langs = True
 
@@ -120,7 +122,7 @@ def parse_json(dict_obj, single_lang):
                     def_txt = next(iter(definition.values())).strip()
                     if def_txt in langs[lang]['new_line_defs']: continue
                     if def_txt != "":
-                        for x in def_txt.split("\n"): langs[lang]['new_line_defs'].add(x)
+                        for y in def_txt.split("\n"): langs[lang]['new_line_defs'].add(y.strip())
                         def_txt = def_txt.replace("\n", "\n          - ")
                         lemma = parse_lemma(def_txt)
                         if lemma:
@@ -149,10 +151,10 @@ def print_out(langs):
         print(color(l, "blue"))
         for p in langs[l]['parts_of_speech']:
             print("  " + str(p))
-            y = 1
+            i = 1
             for d in langs[l]['parts_of_speech'][p]:
-                print("       " + str(y) + ". " + str(d.strip()))
-                y += 1
+                print("       " + str(i) + ". " + str(d.strip()))
+                i += 1
 
 def handle_lemmas(langs):
     lemma_dict = {}
