@@ -3,8 +3,6 @@ import re
 import ast
 import sys
 
-# TODO: Implement non-lemmatized form detection
-
 # Set this to True to only list langs in `user_langs`
 limit_langs = True
 
@@ -130,7 +128,6 @@ def parse_json(dict_obj, single_lang):
                             lemmas_found = True
                         langs[lang]['parts_of_speech'][part_of_speech].append(def_txt)
         except Exception as e:
-            raise e
             print("Error: " + str(e))
             return None
     if (not langs) or (len(langs) == 0):
@@ -165,18 +162,22 @@ def handle_lemmas(langs):
             lemma_dict[i] = (lemma, lang)
             i += 1
     print_sep()
-    print("\nLemmas detected:")
+    one_lemma = i == 2
+    print("\nLemma{} detected:".format("" if one_lemma else "s"))
     for index in lemma_dict:
         print("{}. {}".format(index, lemma_dict[index][0]))
-    prompt = "Enter 1 or new word" if i == 2 else "Enter 1-{} or new word".format(i-1)
+    prompt = "Press enter to look up lemma or new word" if one_lemma else "Enter 1-{} or new word".format(i-1)
     prompt += "\n>"
     inp = input(prompt).strip()
     integer_entered = False
     try:
         word = lemma_dict[int(inp)][0]
         integer_entered = True
-    except ValueError or KeyError:
+    except (ValueError, KeyError):
         word = inp
+    if word == quit_word: goodbye()
+    if one_lemma and word == "":
+        word = lemma_dict[1][0]
     json = get_word_json(clean_word(word))
     if json is None:
         print(color("Word not found.", "yellow"))
